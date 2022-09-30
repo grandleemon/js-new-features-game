@@ -1,0 +1,165 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+h1{
+    text-align: center;
+}
+
+body{
+    background: #EECABA;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+input{
+    padding: 0 10px 0 10px;
+    height: 33px;
+    width: 100%;
+    outline: none;
+    border: none;
+    margin-bottom: 15px;
+}
+
+.wrapper{
+    padding: 40px;
+    border: 1px solid #B87658;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 2px 10px #B87658;
+}
+
+.button__wrapper{
+    width: 100%;
+    max-width: 200px;
+    height: 44px;
+    margin: 0 auto;
+}
+
+.button__wrapper.game-in-process{
+    display: none;
+}
+
+.button__wrapper button{
+    width: 100%;
+    height: 100%;
+    color: #ffffff;
+    background: #EB9670;
+    border: 1px solid #EB9670;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+.button__wrapper button:hover{
+    background-color: #ffffff;
+    color: #6B4533;
+}
+
+button[disabled]{
+    opacity: 50%;
+    cursor: not-allowed;
+}
+
+button[disabled]:hover{
+    background: #EB9670;
+    color: white;
+}
+
+.notifier{
+    display: none;
+}
+
+.notifier.game-in-process{
+    display: block;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.input__wrapper{
+    display: none;
+}
+
+.input__wrapper.game-in-process{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    margin: 0 auto;
+    flex-direction: column;
+}
+
+.input__wrapper.game-in-process input{
+    height: 33px;
+    width: 100%;
+    outline: none;
+    border: none;
+    margin-bottom: 15px;
+}
+
+.input__wrapper.game-in-process button{
+    height: 33px;
+    width: 100%;
+    max-width: 200px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background: #EB9670;
+    transition: all .3s;
+    color: white;
+}
+
+.input__wrapper.game-in-process button[disabled]{
+    opacity: 50%;
+    cursor: not-allowed;
+}
+
+.input__wrapper.game-in-process button[disabled]:hover{
+    background: #EB9670;
+    color: white;
+}
+
+.input__wrapper.game-in-process button:hover{
+    background-color: #ffffff;
+    color: #6B4533;
+}
+
+.lose__notifier, .win__notifier{
+    display: none;
+}
+
+.lose__notifier.show, .win__notifier.show{
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    align-items: center;
+}
+
+.lose__notifier button, .win__notifier button{
+    height: 44px;
+    width: 100%;
+    max-width: 200px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background: #EB9670;
+    transition: all .3s;
+    color: white;
+}
+
+.lose__notifier button:hover, .win__notifier button:hover{
+    background-color: #ffffff;
+    color: #6B4533;
+}
+
+.user__attempts ul{
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0 0 0;
+    padding: 0;
+}

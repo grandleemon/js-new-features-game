@@ -3,10 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+    <div class="wrapper">
 
+        <h1 class="game__heading">Guess the number</h1>
+
+        <input class="max__number" type="number" placeholder="Write maximum non-negative number up to 200">
+
+        <div class="button__wrapper">
+            <button class="start__button" disabled>Start</button>
+        </div>
+
+        <div class="notifier">
+
+        </div>
+
+        <div class="input__wrapper">
+            <input class="input__number" type="number" placeholder="Your number">
+            <button class="check__button" disabled>Check</button>
+            <div class="user__attempts">
+
+            </div>
+        </div>
+
+        <div class="lose__notifier">
+            <h1>You lost</h1>
+            <p class="lose__notifier-number"></p>
+            <button class="restart__button">Restart</button>
+        </div>
+
+        <div class="win__notifier">
+            <h1>You won</h1>
+            <p class="win__notifier-number"></p>
+            <button class="restart__button">Restart</button>
+        </div>
+    </div>
 <script src="./index.js"></script>
 </body>
 </html>

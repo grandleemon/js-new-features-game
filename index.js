@@ -14,71 +14,134 @@ document.addEventListener("DOMContentLoaded", () => {
     const userNumbers = document.querySelector('.user__attempts')
     const maxNumberInput = document.querySelector('.max__number')
 
+    const userAttemptsList = document.createElement('ul')
+
     maxNumberInput.focus()
 
     class Game {
 
-        randomNumberPicker = (max = 20) => {
-            console.log(Math.floor(Math.random() * 20))
+        maxNumber;
+        randomNumber;
+        attempts;
+        userAttempts = [];
+        gameStage = 'start'
+
+        randomNumberPicker = (number) => {
+            this.randomNumber = Math.floor(Math.random() * number)
+            this.maxNumber = number
         }
 
-    }
+        checkNumber = () => {
+            if(+userInput.value === +this.randomNumber){
+                //?
+                setTimeout(() => {
+                    this.gameStage = 'finished'
+                }, 1)
+                winNotifier.classList.add('show')
+                winNotifierNumber.innerHTML = `The number was ${this.randomNumber}`
+                notifier.classList.remove('game-in-process')
+                inputWrapper.classList.remove('game-in-process')
+                userInput.value = ''
+                this.userAttempts = []
 
-    let maxNumber;
-    let randomNumber;
-    let attempts;
-    let userAttempts = [];
-    let gameStage = 'start'
-    const userAttemptsList = document.createElement('ul')
+            } else {
+                this.userAttempts.push(userInput.value)
+                notifier.innerHTML = `The number is ${userInput.value < this.randomNumber ? "greater" : "less"} than ${userInput.value}, you have ${this.attempts} more ${this.attempts > 1 ? "attempts" : "attempt"} to guess the number`
 
-    const randomNumberPicker = (number) => {
-        randomNumber = Math.floor(Math.random() * number)
-        maxNumber = number
-    }
+                const listElement = document.createElement('li')
+                listElement.innerHTML = this.userAttempts[this.userAttempts.length - 1]
+                userAttemptsList.appendChild(listElement)
 
-    const checkNumber = () => {
-        if(+userInput.value === +randomNumber){
-            winNotifier.classList.add('show')
-            winNotifierNumber.innerHTML = `The number was ${randomNumber}`
-            notifier.classList.remove('game-in-process')
+                userInput.value = ''
+            }
+        }
+
+        checkAttempts = () => {
+            if(this.attempts === 0){
+                //?
+                setTimeout(() => {
+                    this.gameStage = 'finished'
+                }, 1)
+                loseNotifier.classList.add('show')
+                loseNotifierNumber.innerHTML = `The number was ${this.randomNumber}`
+                notifier.classList.remove('game-in-process')
+                inputWrapper.classList.remove('game-in-process')
+                userNumbers.removeChild(userAttemptsList)
+                this.userAttempts = []
+            }
+        }
+
+        checkButtonFunc = () => {
+            if(+userInput.value < 0 || +userInput.value > this.maxNumber || userInput.value === '') {
+                checkButton.setAttribute('disabled', "true")
+            } else {
+                checkButton.removeAttribute('disabled')
+            }
+        }
+
+        startGame = () => {
+            this.randomNumberPicker(+maxNumberInput.value)
+            if(Math.floor(this.maxNumber / 4) < 3){
+                this.attempts = 3;
+            } else {
+                this.attempts = Math.floor(this.maxNumber / 4);
+            }
+            buttonWrapper.classList.add('game-in-process')
+            inputWrapper.classList.add('game-in-process')
+            notifier.classList.add('game-in-process')
+            heading.style.display = 'none'
+            notifier.innerHTML = `You have ${this.attempts} attempts to guess the number`
+            userNumbers.appendChild(userAttemptsList)
+            maxNumberInput.style.display = 'none'
+            maxNumberInput.value = ''
+            userInput.focus()
+            startButton.setAttribute('disabled', "true")
+        }
+
+        restartGame = () => {
+            this.randomNumberPicker()
+            buttonWrapper.classList.remove('game-in-process')
             inputWrapper.classList.remove('game-in-process')
-            userInput.value = ''
-            userAttempts = []
-            gameStage = 'finished'
-        } else {
-            userAttempts.push(userInput.value)
-            notifier.innerHTML = `The number is ${userInput.value < randomNumber ? "greater" : "less"} than ${userInput.value}, you have ${attempts} more ${attempts > 1 ? "attempts" : "attempt"} to guess the number`
-
-            const listElement = document.createElement('li')
-            listElement.innerHTML = userAttempts[userAttempts.length - 1]
-            userAttemptsList.appendChild(listElement)
-
-            userInput.value = ''
-        }
-    }
-
-    const checkAttempts = () => {
-        if(attempts === 0){
-            loseNotifier.classList.add('show')
-            loseNotifierNumber.innerHTML = `The number was ${randomNumber}`
             notifier.classList.remove('game-in-process')
-            inputWrapper.classList.remove('game-in-process')
-            userNumbers.removeChild(userAttemptsList)
-            userAttempts = []
+            loseNotifier.classList.remove('show')
+            winNotifier.classList.remove('show')
+            heading.style.display = 'none'
+            maxNumberInput.style.display = 'block'
+            heading.style.display = 'block'
+            notifier.innerHTML = `You have ${this.attempts} attempts to guess the number`
+            while(userAttemptsList.hasChildNodes()){
+                userAttemptsList.removeChild(userAttemptsList.firstChild)
+            }
+            userNumbers.appendChild(userAttemptsList)
+            this.gameStage = 'start'
+            maxNumberInput.focus()
         }
     }
 
-    const checkButtonFunc = () => {
-        if(+userInput.value < 0 || +userInput.value > maxNumber || userInput.value === '') {
-            checkButton.setAttribute('disabled', "true")
-        } else {
-            checkButton.removeAttribute('disabled')
-        }
-    }
+    const GuessTheNumber = new Game();
+
+    startButton.addEventListener('click', () => {
+        GuessTheNumber.startGame()
+    })
+
+    checkButton.addEventListener('click', () => {
+        GuessTheNumber.attempts -= 1
+        GuessTheNumber.checkNumber()
+        GuessTheNumber.checkAttempts()
+        GuessTheNumber.checkButtonFunc()
+    })
+
+    restartButton.forEach(btn => {
+
+        btn.addEventListener('click', () => {
+            GuessTheNumber.restartGame()
+        })
+
+    })
 
     userInput.oninput = () => {
-        userInput.value.replaceAll(/\s/gi, "")
-        checkButtonFunc()
+        userInput.value.replaceAll(" ", "")
+        GuessTheNumber.checkButtonFunc()
     }
 
     maxNumberInput.oninput = () => {
@@ -89,78 +152,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    const startGame = () => {
-        randomNumberPicker(+maxNumberInput.value)
-        if(Math.floor(maxNumber / 4) < 3){
-            attempts = 3;
-        } else {
-            attempts = Math.floor(maxNumber / 4);
-        }
-        buttonWrapper.classList.add('game-in-process')
-        inputWrapper.classList.add('game-in-process')
-        notifier.classList.add('game-in-process')
-        heading.style.display = 'none'
-        notifier.innerHTML = `You have ${attempts} attempts to guess the number`
-        userNumbers.appendChild(userAttemptsList)
-        maxNumberInput.style.display = 'none'
-        maxNumberInput.value = ''
-        userInput.focus()
-        startButton.setAttribute('disabled', "true")
-    }
-
-    startButton.addEventListener('click', () => {
-        startGame()
-    })
-
     document.addEventListener('keydown', (e) => {
-        if(gameStage === 'start' && e.key === 'Enter' && (+maxNumberInput.value <= 200 || +maxNumberInput.value > 0 || maxNumberInput.value === '')){
-            startGame()
-            gameStage = 'in-process'
+        if(GuessTheNumber.gameStage === 'start' && e.key === 'Enter' && (+maxNumberInput.value <= 200 || +maxNumberInput.value > 0 || maxNumberInput.value === '')){
+            GuessTheNumber.startGame()
+            GuessTheNumber.gameStage = 'in-process'
         }
-        if(gameStage === 'in-process' && e.key === 'Enter' && (+userInput.value > 0 && +userInput.value <= maxNumber && userInput.value !== '')){
-            attempts -= 1
-            checkNumber()
-            checkAttempts()
-            checkButtonFunc()
+        if(GuessTheNumber.gameStage === 'in-process' && e.key === 'Enter' && (+userInput.value >= 0 && +userInput.value <= GuessTheNumber.maxNumber && userInput.value !== '')){
+            GuessTheNumber.attempts -= 1
+            GuessTheNumber.checkNumber()
+            GuessTheNumber.checkAttempts()
+            GuessTheNumber.checkButtonFunc()
         }
-        if(gameStage === 'finished' && e.key === 'Enter'){
-            restartGame()
+        if(GuessTheNumber.gameStage === 'finished' && e.key === 'Enter'){
+            GuessTheNumber.restartGame()
             maxNumberInput.focus()
         }
     })
 
-    checkButton.addEventListener('click', () => {
-        attempts -= 1
-        checkNumber()
-        checkAttempts()
-        checkButtonFunc()
-    })
-
-    const restartGame = () => {
-        randomNumberPicker()
-        buttonWrapper.classList.remove('game-in-process')
-        inputWrapper.classList.remove('game-in-process')
-        notifier.classList.remove('game-in-process')
-        loseNotifier.classList.remove('show')
-        winNotifier.classList.remove('show')
-        heading.style.display = 'none'
-        maxNumberInput.style.display = 'block'
-        heading.style.display = 'block'
-        notifier.innerHTML = `You have ${attempts} attempts to guess the number`
-        while(userAttemptsList.hasChildNodes()){
-            userAttemptsList.removeChild(userAttemptsList.firstChild)
-        }
-        userNumbers.appendChild(userAttemptsList)
-        gameStage = 'start'
-        maxNumberInput.focus()
-    }
-
-    restartButton.forEach(btn => {
-
-        btn.addEventListener('click', () => {
-            restartGame()
-        })
-
-    })
 });
 
